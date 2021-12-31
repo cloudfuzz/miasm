@@ -1316,6 +1316,13 @@ class disasmEngine(object):
             cur_block.addline(instr)
             if not instr.breakflow():
                 continue
+            if instr.is_subcall():
+                instr.dstflow2label(self.loc_db)
+                dst = instr.getdstflow(self.loc_db)[0]
+                if dst.is_loc():
+                    if dst.loc_key == self.loc_db.get_name_location("__afl_maybe_log"):
+                        instr.name = "PUSH"
+                        continue
             # test split
             if instr.splitflow() and not (instr.is_subcall() and self.dontdis_retcall):
                 add_next_offset = True
