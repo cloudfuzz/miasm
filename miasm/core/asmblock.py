@@ -1320,7 +1320,10 @@ class disasmEngine(object):
                 instr.dstflow2label(self.loc_db)
                 dst = instr.getdstflow(self.loc_db)[0]
                 if dst.is_loc():
-                    if dst.loc_key == self.loc_db.get_name_location("__afl_maybe_log"):
+                    names = list(self.loc_db.get_location_names(dst.loc_key))
+                    if len(names) == 0:
+                        continue
+                    if "__afl_maybe_log" in names[0]:
                         instr.name = "PUSH"
                         continue
             # test split
